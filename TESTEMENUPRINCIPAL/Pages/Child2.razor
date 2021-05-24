@@ -1,0 +1,53 @@
+﻿@page "/chield2"
+@using TESTEMENUPRINCIPAL.Data
+@inject NotifierService Notifier
+@implements IDisposable
+
+@inject IState State
+
+@if (State.ShowEasterEggs)
+{
+    <MudText Typo="Typo.subtitle2">EASTER EGGS SHOWN</MudText>
+}
+
+<hr />
+<MudText Typo="Typo.h6">Displays Value from service and lets user put in new value</MudText>
+
+@*<MudField Variant="Variant.Text" @bind-Value="@value" />*@
+<MudForm>
+    <MudTextField @bind-Value="@value" />
+</MudForm>
+
+<MudButton @onclick="@AddValue">Set Value</MudButton>
+
+@code {
+    private string value { get; set; }
+
+
+    public void AddValue()
+    {
+        Notifier.AddTolist(value);
+
+    }
+
+    protected override void OnInitialized()
+    {
+        State.Notify += OnNotify;
+
+    }
+
+    public void OnNotify()
+    {
+        InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+
+    public void Dispose()
+    {
+        State.Notify -= OnNotify;
+    }
+
+}

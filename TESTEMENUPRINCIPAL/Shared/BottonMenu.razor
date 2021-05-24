@@ -1,0 +1,22 @@
+﻿
+
+<MudTabs Position="Position.Bottom" KeepPanelsAlive="true" PanelClass="d-flex align-lg-stretch" Class="flex-grow-1">
+    <MudTabPanel Text="Api" Icon="@Icons.Material.Filled.Api" we>
+
+            <MudContainer MaxWidth="MaxWidth.ExtraLarge" >
+                <MudPaper Height="400px" Width="100%" Square="true" Class="mud-theme-primary"></MudPaper>
+            </MudContainer>
+    </MudTabPanel>
+    <MudTabPanel Icon="@Icons.Material.Filled.Build" />
+    <MudTabPanel Text="Bug Report" Icon="@Icons.Material.Filled.BugReport" />
+</MudTabs>
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

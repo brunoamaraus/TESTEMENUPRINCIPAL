@@ -1,0 +1,49 @@
+﻿@page "/chield1"
+@using TESTEMENUPRINCIPAL.Data
+@inject NotifierService Notifier
+@implements IDisposable
+
+@inject IState State
+
+<MudCheckBox @bind-Checked="State.ShowEasterEggs" Label="Show Easter Eggs" />
+<hr />
+<MudText Typo="Typo.h6">User puts in something</MudText>
+<MudForm>
+    <MudTextField @bind-Value="@value" />
+</MudForm>
+
+<MudButton @onclick="@AddValue">Add value</MudButton>
+
+@foreach (var value in Notifier.ValuesList)
+{
+    <MudText>@value</MudText>
+}
+
+
+@code {
+    private string value { get; set; }
+
+    public void AddValue()
+    {
+        Notifier.AddTolist(value);
+
+    }
+
+    public async Task OnNotify()
+    {
+        await InvokeAsync(() =>
+        {
+            StateHasChanged();
+        });
+    }
+
+
+    protected override void OnInitialized()
+    {
+        Notifier.Notify += OnNotify;
+    }
+    public void Dispose()
+    {
+        Notifier.Notify -= OnNotify;
+    }
+}

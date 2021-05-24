@@ -1,0 +1,97 @@
+﻿@using MudBlazor.Services
+@implements IDisposable
+@inherits LayoutComponentBase
+<MudThemeProvider />
+
+<MudLayout>
+    <MudTabs Position="Position.Bottom" KeepPanelsAlive="true" PanelClass="d-flex" >
+        @foreach (var item in ListaMenu)
+        {
+        <MudTabPanel Text="Api" Icon="@item.icon" OnClick="@((e) => Addtabela(@item))">
+            <MudContainer MaxWidth="MaxWidth.ExtraLarge" Style="margin:0; padding:0">
+                <MudPaper Height="@height" Width="100%" Square="true" Class="mud-theme-primary">
+                    @GetRenderFragment(@item.page)
+                </MudPaper>
+            </MudContainer>
+        </MudTabPanel>
+        }
+    </MudTabs>
+</MudLayout>
+@code {
+    List<TabsMenu> ListaMenu = new List<TabsMenu>();
+    public class TabsMenu
+    {
+        public int TabsMenu_id { get; set; }
+        public string icon { get; set; }
+        public ComponentBase page { get; set; }
+    }
+
+    [Inject] IResizeListenerService ResizeListener { get; set; }
+
+    int width = 0;
+    string height = "0";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        GeraMenu();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ResizeListener.OnResized += OnResized;
+
+            var size = await ResizeListener.GetBrowserWindowSize();
+            height = size.Height-48+"px";
+            width = size.Width;
+            StateHasChanged();
+        }
+
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private void OnResized(object sender, BrowserWindowSize size)
+    {
+        width = size.Width;
+        height = size.Height-48 + "px";
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ResizeListener.OnResized -= OnResized;
+    }
+
+    private void GeraMenu()
+    {
+        ListaMenu.Add(new TabsMenu() { icon = @Icons.Material.Filled.Api, page = new Counter() });
+        ListaMenu.Add(new TabsMenu() { icon = @Icons.Material.Filled.Build, page = new Child1() });
+        ListaMenu.Add(new TabsMenu() { icon = @Icons.Material.Filled.BugReport, page = new Child2() });
+        ListaMenu.Add(new TabsMenu() { icon = @Icons.Material.Filled.PlusOne, page = null });
+    }
+
+    RenderFragment GetRenderFragment(ComponentBase com)
+    {
+        if (com != null)
+        {
+            var type = com.GetType();
+            RenderFragment renderFragment = renderTreeBuilder =>
+            {
+                renderTreeBuilder.OpenComponent(0, type);
+                renderTreeBuilder.CloseComponent();
+            };
+            return renderFragment;
+        }
+        return null;
+    }
+
+    private void Addtabela(TabsMenu tab)
+    {
+        if (tab.page == null)
+        {
+            ListaMenu.Add(new TabsMenu() { icon = @Icons.Material.Filled.Api, page = new Counter() });
+        }
+    }
+}

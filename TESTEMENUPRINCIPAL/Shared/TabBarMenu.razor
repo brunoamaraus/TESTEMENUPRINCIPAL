@@ -1,0 +1,14 @@
+﻿@*@inject Data.List<ItemTabBar> listaItemBar
+<MudTabs Outlined="true" Position="Position.Bottom" Rounded="true" Border="true"
+         ApplyEffectsToContainer="true" Class="mt-8" PanelClass="pa-6">
+    @foreach (var tabItem in listaItemBar)
+    {
+        <MudTabPanel Text="">
+            <MudText>Content One</MudText>
+        </MudTabPanel>
+    }
+</MudTabs>
+
+@code {
+    var lista = listaItemBar;
+}*@
